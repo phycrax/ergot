@@ -3,12 +3,7 @@
 use core::pin::pin;
 
 use comms::{
-    GreenLedEndpoint, PairedInterfaceManager, RedLedEndpoint, RxIdle, RxWorker, TxIdle, TxWorker,
-};
-
-use bbq2::{
-    queue::BBQueue,
-    traits::{coordination::cas::AtomicCoord, notifier::maitake::MaiNotSpsc, storage::Inline},
+    GreenLedEndpoint, PairedUartProfile, RedLedEndpoint, RxIdle, RxWorker, TxIdle, TxWorker
 };
 use embassy_stm32::{
     gpio::Output,
@@ -16,23 +11,25 @@ use embassy_stm32::{
     usart::{self, UartRx, UartTx},
 };
 use embassy_time::{Duration, Ticker};
-use ergot::{Address, NetStack};
-use mutex::raw_impls::single_core_thread_mode::ThreadModeRawMutex;
+use ergot::{exports::bbq2::{queue::BBQueue, traits::{notifier::maitake::MaiNotSpsc, storage::Inline}}, Address, NetStack};
+use ergot::exports::{bbq2::traits::coordination::cas::AtomicCoord,mutex::raw_impls::{cs::CriticalSectionRawMutex}};
 use static_cell::ConstStaticCell;
 
 pub const TX_QUEUE_LEN: usize = 4096;
 pub const RX_BUF_LEN: usize = 512;
-pub type TxQueue = BBQueue<Inline<TX_QUEUE_LEN>, AtomicCoord, MaiNotSpsc>;
-pub type TxQueueHdl = &'static TxQueue;
-pub type Stack = NetStack<ThreadModeRawMutex, PairedInterfaceManager<TxQueueHdl>>;
 
-pub static STACK: Stack = NetStack::new();
+pub type TxQueue = BBQueue<Inline<TX_QUEUE_LEN>, AtomicCoord, MaiNotSpsc>;
+pub type Stack = NetStack<CriticalSectionRawMutex, PairedUartProfile<&'static TxQueue>>;
+
+pub static TX_QUEUE: TxQueue = TxQueue::new();
+pub static STACK: Stack = PairedUartProfile::new_controller_stack::<CriticalSectionRawMutex>(
+    TX_QUEUE.framed_producer(),
+    RX_BUF_LEN as u16,
+);
 
 #[embassy_executor::task]
 pub async fn tx_task(tx: UartTx<'static, Async>) {
-    static TX_QUEUE: TxQueue = TxQueue::new();
-
-    let mut tx_worker = TxWorker::new_controller(&STACK, &TX_QUEUE, WrappedTx(tx), 512)
+    let mut tx_worker = TxWorker::new_controller(&STACK, &TX_QUEUE, WrappedTx(tx))
         .map_err(drop)
         .unwrap();
 

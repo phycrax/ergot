@@ -42,6 +42,4 @@ static_cell = "2.1.1"
 
 comms   = { path = "../comms" }
 ergot   = { path = "../../../../crates/ergot" }
-bbq2    = { version = "0.4.1", default-features = false, features = ["maitake-sync-0_2"] }
 serde   = { version = "1.0", default-features = false, features = ["derive"] }
-mutex   = { version = "1.0", default-features = false, features = ["impl-unsafe-cortex-m-single-core"] }
