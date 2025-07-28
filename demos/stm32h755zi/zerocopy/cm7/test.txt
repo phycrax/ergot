@@ -1,0 +1,9 @@
+defmt off before
+
+   text    data     bss     dec     hex filename
+  29348     232    7076   36656    8f30 cm7
+
+defmt trace before
+
+   text    data     bss     dec     hex filename
+  43532     232    7076   50840    c698 cm7
