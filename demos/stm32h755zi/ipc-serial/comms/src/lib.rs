@@ -310,12 +310,9 @@ where
     }
 
     pub fn new_target(net: N, q: Q, tx: T) -> Result<Self, T> {
-        let res = net.stack().manage_profile(|mgr| {
-            mgr.set_interface_state(
-                (),
-                InterfaceState::Inactive,
-            )
-        });
+        let res = net
+            .stack()
+            .manage_profile(|mgr| mgr.set_interface_state((), InterfaceState::Inactive));
 
         if res.is_ok() {
             Ok(Self {

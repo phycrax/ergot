@@ -23,9 +23,9 @@ codegen-units = 1
 debug = true
 
 [patch.crates-io]
-embassy-executor    = { git = "https://github.com/embassy-rs/embassy",  rev = "c361c82c41af1697d5c849b817554074e6dd6c8b" }
-embassy-stm32       = { git = "https://github.com/embassy-rs/embassy",  rev = "c361c82c41af1697d5c849b817554074e6dd6c8b" }
-embassy-time        = { git = "https://github.com/embassy-rs/embassy",  rev = "c361c82c41af1697d5c849b817554074e6dd6c8b" }
+embassy-executor    = { git = "https://github.com/embassy-rs/embassy",  rev = "8f64a14bebe711962af0136a5acd2b3cef509402" }
+embassy-stm32       = { git = "https://github.com/embassy-rs/embassy",  rev = "8f64a14bebe711962af0136a5acd2b3cef509402" }
+embassy-time        = { git = "https://github.com/embassy-rs/embassy",  rev = "8f64a14bebe711962af0136a5acd2b3cef509402" }
 
 [dependencies]
 embassy-executor    = { version = "*",    features = ["defmt", "arch-cortex-m", "executor-thread"] }

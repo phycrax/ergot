@@ -3,7 +3,7 @@
 use core::pin::pin;
 
 use comms::{
-    GreenLedEndpoint, PairedUartProfile, RedLedEndpoint, RxIdle, RxWorker, TxIdle, TxWorker
+    GreenLedEndpoint, PairedUartProfile, RedLedEndpoint, RxIdle, RxWorker, TxIdle, TxWorker,
 };
 use embassy_stm32::{
     gpio::Output,
@@ -11,8 +11,16 @@ use embassy_stm32::{
     usart::{self, UartRx, UartTx},
 };
 use embassy_time::{Duration, Ticker};
-use ergot::{exports::bbq2::{queue::BBQueue, traits::{notifier::maitake::MaiNotSpsc, storage::Inline}}, Address, NetStack};
-use ergot::exports::{bbq2::traits::coordination::cas::AtomicCoord,mutex::raw_impls::{cs::CriticalSectionRawMutex}};
+use ergot::exports::{
+    bbq2::traits::coordination::cas::AtomicCoord, mutex::raw_impls::cs::CriticalSectionRawMutex,
+};
+use ergot::{
+    Address, NetStack,
+    exports::bbq2::{
+        queue::BBQueue,
+        traits::{notifier::maitake::MaiNotSpsc, storage::Inline},
+    },
+};
 use static_cell::ConstStaticCell;
 
 pub const TX_QUEUE_LEN: usize = 4096;
